@@ -1,0 +1,5 @@
+include 'com.rainerschuster.sygus'
+include 'com.rainerschuster.sygus.ide'
+include 'com.rainerschuster.sygus.idea'
+include 'com.rainerschuster.sygus.web'
+include 'com.rainerschuster.sygus.tests'

@@ -1,0 +1,93 @@
+<idea-plugin version="2">
+	<extensions defaultExtensionNs="org.eclipse.xtext.idea">
+		<package
+			uri="http://www.rainerschuster.com/sygus/SyGuS"
+			class="com.rainerschuster.sygus.syGuS.SyGuSPackage"
+		/>
+		<resourceFactory 
+			type="sl"
+			class="org.eclipse.xtext.resource.IResourceFactory"
+			factoryClass="com.rainerschuster.sygus.idea.SyGuSExtensionFactory"
+		/>
+		<resourceServiceProvider
+			uriExtension="sl"
+			class="org.eclipse.xtext.idea.resource.IResourceIdeaServiceProvider"
+			factoryClass="com.rainerschuster.sygus.idea.SyGuSExtensionFactory"
+		/>
+
+		<lang.setup
+			language="com.rainerschuster.sygus.SyGuS"
+			implementationClass="com.rainerschuster.sygus.idea.SyGuSIdeaSetup"
+		/>
+	</extensions>
+
+	<extensions defaultExtensionNs="com.intellij">
+		<psi.treeChangePreprocessor implementation="com.rainerschuster.sygus.idea.lang.psi.SyGuSCodeBlockModificationListener"/>
+
+		<fileTypeFactory implementation="com.rainerschuster.sygus.idea.lang.SyGuSFileTypeFactory"/>
+		<stubElementTypeHolder class="com.rainerschuster.sygus.idea.lang.SyGuSElementTypeProvider"/>
+		<lang.ast.factory 
+			language="com.rainerschuster.sygus.SyGuS"
+			factoryClass="com.rainerschuster.sygus.idea.SyGuSExtensionFactory"
+			implementationClass="org.eclipse.xtext.idea.lang.BaseXtextASTFactory"
+		/>
+		<lang.parserDefinition 
+			language="com.rainerschuster.sygus.SyGuS"
+			factoryClass="com.rainerschuster.sygus.idea.SyGuSExtensionFactory"
+			implementationClass="com.rainerschuster.sygus.idea.lang.parser.SyGuSParserDefinition"
+		/>
+		<lang.findUsagesProvider 
+			language="com.rainerschuster.sygus.SyGuS"
+			factoryClass="com.rainerschuster.sygus.idea.SyGuSExtensionFactory"
+			implementationClass="org.eclipse.xtext.idea.findusages.BaseXtextFindUsageProvider"
+		/>
+		<lang.refactoringSupport 
+			language="com.rainerschuster.sygus.SyGuS"
+			factoryClass="com.rainerschuster.sygus.idea.SyGuSExtensionFactory"
+			implementationClass="org.eclipse.xtext.idea.refactoring.BaseXtextRefactoringSupportProvider"
+		/>
+		<lang.namesValidator 
+			language="com.rainerschuster.sygus.SyGuS"
+			factoryClass="com.rainerschuster.sygus.idea.SyGuSExtensionFactory"
+			implementationClass="com.intellij.lang.refactoring.NamesValidator"
+		/>
+		<lang.syntaxHighlighterFactory key="com.rainerschuster.sygus.SyGuS" implementationClass="com.rainerschuster.sygus.idea.highlighting.SyGuSSyntaxHighlighterFactory" />
+		<lang.braceMatcher 
+			language="com.rainerschuster.sygus.SyGuS"
+			factoryClass="com.rainerschuster.sygus.idea.SyGuSExtensionFactory"
+			implementationClass="com.intellij.lang.PairedBraceMatcher"
+		/>
+		<annotator 
+			language="com.rainerschuster.sygus.SyGuS"
+			factoryClass="com.rainerschuster.sygus.idea.SyGuSExtensionFactory"
+			implementationClass="org.eclipse.xtext.idea.annotation.IssueAnnotator"
+		/>
+		<completion.contributor language="com.rainerschuster.sygus.SyGuS" implementationClass="com.rainerschuster.sygus.idea.completion.SyGuSCompletionContributor"/>
+		<pom.declarationSearcher implementation="com.rainerschuster.sygus.idea.lang.pom.SyGuSPomDeclarationSearcher"/>
+
+		<lang.psiStructureViewFactory 
+			language="com.rainerschuster.sygus.SyGuS"
+			factoryClass="com.rainerschuster.sygus.idea.SyGuSExtensionFactory"
+			implementationClass="com.intellij.lang.PsiStructureViewFactory"
+		/>
+		<facetType implementation="com.rainerschuster.sygus.idea.facet.SyGuSFacetType"/>
+		<lang.documentationProvider 
+			language="com.rainerschuster.sygus.SyGuS"
+			factoryClass="com.rainerschuster.sygus.idea.SyGuSExtensionFactory"
+			implementationClass="org.eclipse.xtext.idea.documentation.IdeaDocumentationProvider"
+		/>
+		<colorSettingsPage implementation="com.rainerschuster.sygus.idea.highlighting.SyGuSColorSettingsPage"/>
+		<highlightVisitor implementation="com.rainerschuster.sygus.idea.highlighting.SyGuSSemanticHighlightVisitor"/>
+
+		<lang.formatter 
+			language="com.rainerschuster.sygus.SyGuS"
+			factoryClass="com.rainerschuster.sygus.idea.SyGuSExtensionFactory"
+			implementationClass="com.intellij.formatting.FormattingModelBuilder"
+		/>
+		<lang.commenter 
+			language="com.rainerschuster.sygus.SyGuS"
+			factoryClass="com.rainerschuster.sygus.idea.SyGuSExtensionFactory"
+			implementationClass="com.intellij.lang.CodeDocumentationAwareCommenter"
+		/>
+	</extensions>
+</idea-plugin>

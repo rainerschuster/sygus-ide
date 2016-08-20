@@ -1,0 +1,227 @@
+grammar com.rainerschuster.sygus.SyGuS //with org.eclipse.xtext.common.Terminals
+ hidden(WS, SL_COMMENT)
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+generate syGuS "http://www.rainerschuster.com/sygus/SyGuS"
+
+SyGuS:
+	commands+=SetLogicCmd commands+=Cmd+
+	| commands+=Cmd+
+;
+
+Cmd:
+	SortDefCmd
+	| VarDeclCmd
+	| FunDeclCmd
+	| FunDefCmd
+	| SynthFunCmd
+	| ConstraintCmd
+	| CheckSynthCmd
+	| SetOptsCmd
+
+	| SynthInvCmd
+	| DeclarePrimedVar
+	| InvConstraintCmd
+;
+
+// TODO Some terminals
+
+Literal:
+	IntConst
+	| RealConst
+	| BoolConst
+	| BVConst
+	| EnumConst
+	| StringConst // TODO This is not specified!
+;
+
+terminal INT_CONST:
+	'-'? '0'..'9'+
+;
+
+terminal REAL_CONST:
+	'-'? '0'..'9'+ '.' '0'..'9'+
+;
+
+terminal BV_CONST:
+	'#b' '0'..'1'+
+	| '#x' ('0'..'9' | 'a'..'f' | 'A'..'F')+
+;
+
+IntConst:
+	value=INT_CONST
+;
+
+BoolConst:
+	{BoolConst} (isTrue?='true'
+	| 'false')
+;
+
+BVConst:
+	value=BV_CONST
+;
+
+EnumConst:
+	type=SYMBOL '::' name=SYMBOL
+;
+
+RealConst:
+	value=REAL_CONST
+;
+
+StringConst:
+	value=STRING
+;
+
+
+SetLogicCmd:
+	'(' 'set-logic' logic=SYMBOL ')'
+;
+
+SortExpr:
+	{IntSort}'Int'
+	| {BoolSort}'Bool'
+	| {RealSort}'Real'
+	| {StringSort}'String' // TODO This is not specified!
+	| {BitVecSort}'(' 'BitVec' i=IntConst ')'
+	| '(' 'Enum' '(' elements+=SYMBOL+ ')' ')'
+	| '(' 'Array' domain=SortExpr range=SortExpr ')'
+	| {RefSort} ref=[SortDefCmd|SYMBOL]
+;
+
+// TODO Where is PositiveInteger defined? (Rename to IntConst?)
+//PositiveInteger:
+//	value=INT_CONST
+//;
+
+SortDefCmd:
+	'(' 'define-sort' name=SYMBOL expression=SortExpr ')'
+;
+
+VarDeclCmd:
+	'(' 'declare-var' name=SYMBOL expression=SortExpr ')'
+;
+
+FunDeclCmd:
+	'(' 'declare-fun' name=SYMBOL '(' arguments+=SortExpr* ')' returnSort=SortExpr ')'
+;
+
+Term:
+	{FunTerm}'(' symbol=SYMBOL terms+=Term* ')'
+	| {LiteralTerm} literal=Literal
+	| {SymbolTerm} symbol=SYMBOL
+	| LetTerm
+;
+
+LetTerm:
+	'(' 'let' '(' bindingTerms+=LetBindingTerm+ ')' x=Term ')'
+;
+
+LetBindingTerm:
+	'(' symbol=SYMBOL sort=SortExpr term=Term ')'
+;
+
+GTerm:
+	{FunGTerm}'(' symbol=SYMBOL terms+=GTerm* ')'
+	| {LiteralGTerm} literal=Literal
+	| {SymbolGTerm} symbol=SYMBOL
+	| LetGTerm
+	| '(' 'Constant' constant=SortExpr ')'
+	| '(' 'Variable' variable=SortExpr ')'
+	| '(' 'InputVariable' formalArgument=SortExpr ')'
+	| '(' 'LocalVariable' formalArgument=SortExpr ')'
+;
+
+LetGTerm:
+	'(' 'let' '(' bindingTerms+=LetBindingGTerm+ ')' x=GTerm ')'
+;
+
+LetBindingGTerm:
+	'(' symbol=SYMBOL sort=SortExpr term=GTerm ')'
+;
+
+FunDefCmd:
+	'(' 'define-fun' name=SYMBOL ArgList returnSort=SortExpr production=Term ')'
+;
+
+fragment ArgList*:
+	'(' arguments+=SymbolSortPair* ')'
+;
+
+SymbolSortPair:
+	'(' x=SYMBOL argument=SortExpr ')'
+;
+
+SynthFunCmd:
+	'(' 'synth-fun' name=SYMBOL ArgList returnSort=SortExpr ('(' productions+=NTDef+ ')')? ')'
+;
+
+// TODO The parentheses around GTerm+ are not in the specification!
+NTDef:
+	'(' name=SYMBOL sort=SortExpr '(' productionRules+=GTerm+ ')' ')'
+;
+
+ConstraintCmd:
+	'(' 'constraint' constraint=Term ')'
+;
+
+CheckSynthCmd:
+	{CheckSynthCmd} '(' 'check-synth' ')'
+;
+
+SetOptsCmd:
+	'(' 'set-options' '(' options+=SymbolPair+ ')' ')'
+;
+
+SymbolPair:
+	'(' key=SYMBOL value=QuotedLiteral ')'
+;
+
+SynthInvCmd:
+	'(' 'synth-inv' name=SYMBOL '(' ( '(' x+=SYMBOL arguments+=SortExpr ')' )* ')' ('(' productions+=NTDef+ ')')? ')'
+;
+
+DeclarePrimedVar:
+	'(' 'declare-primed-var' name=SYMBOL sort=SortExpr ')'
+;
+
+InvConstraintCmd:
+	'(' 'inv-constraint' a=SYMBOL b=SYMBOL c=SYMBOL d=SYMBOL ')'
+;
+
+
+// TODO Where is QuotedLiteral defined?
+QuotedLiteral:
+	value=STRING
+;
+
+
+
+terminal fragment SYM_CHAR   : '+'|'-'|'/'|'*'|'='|'%'|'?'|'!'|'.'|'$'|'_'|'~'|'&'|'^'|'<'|'>'|'@';
+
+terminal STRING:
+	'"' ( !('"') )* '"'
+//	'"' ( !('""') )* '"'
+;
+
+// TODO special chars [+-/*=%?!.$_˜&ˆ<>@]
+terminal fragment SIMPLE_SYMBOL:
+	('a'..'z'|'A'..'Z'|SYM_CHAR) ('0'..'9'|'a'..'z'|'A'..'Z'|SYM_CHAR)*
+;
+
+terminal SYMBOL:
+	SIMPLE_SYMBOL
+	| '|' -> '|'
+;
+
+//terminal KEYWORD:
+// 	':' SIMPLE_SYMBOL
+//;
+
+terminal SL_COMMENT 	: ';' !('\n'|'\r')* ('\r'? '\n')?;
+
+
+terminal WS			: (' '|'\t'|'\r'|'\n')+;
+
+terminal ANY_OTHER: .;

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature id="com.rainerschuster.sygus.feature"
+	label="SyGuS Feature "
+	version="1.0.0.qualifier">
+	<plugin
+			id="com.rainerschuster.sygus"
+			download-size="0"
+			install-size="0"
+			version="0.0.0"
+			unpack="false"/>
+	<plugin
+			id="com.rainerschuster.sygus.ide"
+			download-size="0"
+			install-size="0"
+			version="0.0.0"
+			unpack="false"/>
+	<plugin
+			id="com.rainerschuster.sygus.ui"
+			download-size="0"
+			install-size="0"
+			version="0.0.0"
+			unpack="false"/>
+</feature>
