@@ -25,18 +25,19 @@ class SyGuSLabelProvider extends DefaultEObjectLabelProvider {
 
 	// Labels and icons can be computed like this:
 	
-	def text(Cmd ele) {
-		ele.class.simpleName
-	}
-	def text(Term ele) {
-		ele.class.simpleName
-	}
-	def text(GTerm ele) {
-		ele.class.simpleName
-	}
-	def text(NTDef ele) {
-		ele.class.simpleName + ": " + ele.name
-	}
+//	def text(Cmd ele) {
+//		ele.class.simpleName
+//	}
+//	def text(Term ele) {
+//		ele.class.simpleName
+//	}
+//	def text(GTerm ele) {
+//		ele.class.simpleName
+//	}
+//	def text(NTDef ele) {
+//		ele.class.simpleName + ": " + ele.name
+//	}
+
 //	def text(Greeting ele) {
 //		'A greeting to ' + ele.name
 //	}

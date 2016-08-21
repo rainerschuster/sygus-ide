@@ -85,15 +85,14 @@ SortExpr:
 	| {RealSort}'Real'
 	| {StringSort}'String' // TODO This is not specified!
 	| {BitVecSort}'(' 'BitVec' i=IntConst ')'
-	| '(' 'Enum' '(' elements+=SYMBOL+ ')' ')'
-	| '(' 'Array' domain=SortExpr range=SortExpr ')'
+	| {EnumSort}'(' 'Enum' '(' elements+=EnumElement+ ')' ')'
+	| {ArraySort}'(' 'Array' domain=SortExpr range=SortExpr ')'
 	| {RefSort} ref=[SortDefCmd|SYMBOL]
 ;
 
-// TODO Where is PositiveInteger defined? (Rename to IntConst?)
-//PositiveInteger:
-//	value=INT_CONST
-//;
+EnumElement:
+	name=SYMBOL
+;
 
 SortDefCmd:
 	'(' 'define-sort' name=SYMBOL expression=SortExpr ')'
@@ -119,7 +118,7 @@ LetTerm:
 ;
 
 LetBindingTerm:
-	'(' symbol=SYMBOL sort=SortExpr term=Term ')'
+	'(' name=SYMBOL sort=SortExpr term=Term ')'
 ;
 
 GTerm:
@@ -138,7 +137,7 @@ LetGTerm:
 ;
 
 LetBindingGTerm:
-	'(' symbol=SYMBOL sort=SortExpr term=GTerm ')'
+	'(' name=SYMBOL sort=SortExpr term=GTerm ')'
 ;
 
 FunDefCmd:
@@ -150,7 +149,7 @@ fragment ArgList*:
 ;
 
 SymbolSortPair:
-	'(' x=SYMBOL argument=SortExpr ')'
+	'(' name=SYMBOL type=SortExpr ')'
 ;
 
 SynthFunCmd:
@@ -190,12 +189,9 @@ InvConstraintCmd:
 	'(' 'inv-constraint' a=SYMBOL b=SYMBOL c=SYMBOL d=SYMBOL ')'
 ;
 
-
-// TODO Where is QuotedLiteral defined?
 QuotedLiteral:
 	value=STRING
 ;
-
 
 
 terminal fragment SYM_CHAR   : '+'|'-'|'/'|'*'|'='|'%'|'?'|'!'|'.'|'$'|'_'|'~'|'&'|'^'|'<'|'>'|'@';
@@ -215,12 +211,7 @@ terminal SYMBOL:
 	| '|' -> '|'
 ;
 
-//terminal KEYWORD:
-// 	':' SIMPLE_SYMBOL
-//;
-
 terminal SL_COMMENT 	: ';' !('\n'|'\r')* ('\r'? '\n')?;
-
 
 terminal WS			: (' '|'\t'|'\r'|'\n')+;
 
